@@ -1,0 +1,23 @@
+name: Measure Code Coverage
+
+on: [push]
+
+jobs:
+  unittest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.100
+      - name: Install coverlet.msbuild in BO4ETestProject
+        run: cd BO4ETestProject && dotnet add package coverlet.msbuild
+      - name: Install coverlet.msbuild in TestBO4E-dotnet-Encryption
+        run: cd TestBO4E-dotnet-Encryption && dotnet add package coverlet.msbuild
+      - name: Install coverlet.msbuild in TestBO4E-dotnet-Extensions
+        run: cd TestBO4E-dotnet-Extensions && dotnet add package coverlet.msbuild
+      - name: Install coverlet.msbuild in TestBO4E-dotnet-Reporting
+        run: cd TestBO4E-dotnet-Reporting && dotnet add package coverlet.msbuild
+      - name: Measure BO4E Coverage
+        run: dotnet test /p:Include="[BO4E-dotnet]*"  /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:SkipAutoProps=true /p:CoverletOutputFormat=lcov /p:Threshold=57 --configuration Release
